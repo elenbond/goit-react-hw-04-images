@@ -5,7 +5,7 @@ import Searchbar from './Searchbar/Searchbar';
 import Loader from './Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
-import { getImage } from '../api/api';
+import { getImage } from 'api/api';
 import Modal from './Modal/Modal';
 // import css from '../styles.css';
 
@@ -39,7 +39,7 @@ export class App extends Component {
       this.fetchImages(searchQuery, page);
       return;
     }
-    if (page !== prevState.page && prevProps.searchQuery !== searchQuery) {
+    if (page === prevState.page && prevProps.searchQuery !== searchQuery) {
       this.fetchImages(searchQuery, 1);
       this.setState({ loading: true, page: 1 });
       return;
