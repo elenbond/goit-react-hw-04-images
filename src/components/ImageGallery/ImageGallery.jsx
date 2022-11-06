@@ -8,6 +8,7 @@ const ImageGallery = ({ items, onClick }) => {
             {items.map((item) => {
                 return (
                     <ImageGalleryItem
+                        item={item}
                         key={item.id}
                         webformatURL={item.webformatURL}
                         tags={item.tags}

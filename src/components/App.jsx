@@ -34,12 +34,12 @@ export class App extends Component {
       }
       this.fetchImages();
     }
-    // if (prevProps.searchQuery !== this.state.searchQuery) {
+    // if (prevProps.searchQuery !== searchQuery) {
     //   fetch(`https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=27732054-5513c218cb3363c8c09534df6&image_type=photo&orientation=horizontal&per_page=12/`)
     //     .then(res => res.json())
-    //     .then(console.log)
+    //     // .then(console.log)
     //     .then(images => this.setState(prevState => { return { images: [...prevState.images] } }))
-    //   // this.fetchImages(searchQuery, page);
+    //   // this.fetchImages();
     //   return;
     // }
   }
@@ -49,11 +49,9 @@ export class App extends Component {
   }
 
   loadMore = () => {
-    this.setState(prevState => {
-      return {
-        page: prevState.page + 1,
-      }
-    })
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   }
 
   openModal = imageData => {
@@ -116,11 +114,11 @@ export class App extends Component {
   //     });
   //     toast.error('Sorry, something went wrong.');
   //   }
-  //   // finally {
-  //   //   this.setState({
-  //   //     loading: false,
-  //   //   });
-  //   // }
+  // //   // finally {
+  // //   //   this.setState({
+  // //   //     loading: false,
+  // //   //   });
+  // //   // }
   // }
 
   render() {
