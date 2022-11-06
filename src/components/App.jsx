@@ -7,7 +7,6 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { getImage } from 'api/api';
 import Modal from './Modal/Modal';
-// import css from '../styles.css';
 
 export class App extends Component {
   state = {
@@ -18,80 +17,115 @@ export class App extends Component {
     modal: false,
   }
 
-  // componentDidMount() {
-  //   this.setState({ loading: true });
-  //   fetch('https://pixabay.com/api/?q=cat&page=1&key=27732054-5513c218cb3363c8c09534df6&image_type=photo&orientation=horizontal&per_page=12/')
-  //     .then(res => res.json())
-  //     .then(images => this.setState({ images: [] }))
-  //     .finally(()=>this.setState({loading: false}));
-  // }
-
   componentDidMount() {
     this.setState({
       images: [],
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { page } = this.state;
-    const { searchQuery } = this.props;
-    if (page > prevState.page) {
-      this.fetchImages(searchQuery, page);
-      return;
+  async componentDidUpdate(prevProps, prevState) {
+    const { page, searchQuery } = this.state;
+    if (page !== prevState.page || prevState.searchQuery !== searchQuery) {
+      this.setState({ loading: true });
+      if (page === 1) {
+        this.setState({
+          images: []
+        });
+      }
+      this.fetchImages();
     }
-    if (page === prevState.page && prevProps.searchQuery !== searchQuery) {
-      this.fetchImages(searchQuery, 1);
-      this.setState({ loading: true, page: 1 });
-      return;
-    }
+    // if (prevProps.searchQuery !== this.state.searchQuery) {
+    //   fetch(`https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=27732054-5513c218cb3363c8c09534df6&image_type=photo&orientation=horizontal&per_page=12/`)
+    //     .then(res => res.json())
+    //     .then(console.log)
+    //     .then(images => this.setState(prevState => { return { images: [...prevState.images] } }))
+    //   // this.fetchImages(searchQuery, page);
+    //   return;
+    // }
   }
   
-  onSubmit = ({searchQuery}) => {
-    this.setState({ searchQuery, page: 1, images: []})
+  onSubmit = searchQuery => {
+    this.setState({ searchQuery, page: 1, images: [] })
   }
 
   loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,  // the mistake possible
-    }))
+    this.setState(prevState => {
+      return {
+        page: prevState.page + 1,
+      }
+    })
   }
 
   openModal = imageData => {
-    this.setState(({
-      modal: true,
+    this.setState(({ modal }) => ({
+      modal: !modal,
       imageData,
     }));
   }
 
-  fetchImages = async (searchQuery, page) => {
-    try {
-      const { images } = await getImage({ page, q: searchQuery });
-        if (images.length === 0) {
-          toast.error('This search result wasn`t successful. Please, try again!');
-          return;
-        };
-        if (images.lenght === 1) {
-          toast.success('View results!');
+  fetchImages = () => {
+    const { searchQuery, page } = this.state;
+    getImage({ page, q: searchQuery })
+      .then(res => {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...res],
+          loading: false,
+        }));
+        if (res.length === 0) {
+          return toast.error('This search result wasn`t successful. Please, try again!');
         }
-        this.setState(prevState => {
-          return {
-            images: [...prevState.images, ...images],
-            loading: false,
-          };
-        });
-      
-      }
-    catch (error)  {
-      this.setState({
-        loading: false,
-      });
-      toast.error('Sorry, something went wrong.');
-    };
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+        })
+        toast.error('Sorry, something went wrong.');
+      })
   }
+
+  // async fetchImages(searchQuery, page) {
+  //   this.setState({
+  //     loading: true,
+  //   });
+  //   try {
+  //     const result = await getImage({ page, q: searchQuery });
+  //     const items = result.hits;
+  //     if (items.length === 0) {
+  //       toast.error('This search result wasn`t successful. Please, try again!');
+  //       return;
+  //     };
+  //     if (page === 1) {
+  //       this.setState(() => {
+  //         return {
+  //           images: [...items],
+  //         }
+  //       });
+  //       toast.success('View results!');
+  //     } else {
+  //       this.setState(prevState => {
+  //         return {
+  //           images: [...prevState.images, ...items],
+  //           loading: false,
+  //         };
+  //       });
+  //     };
+  //   }
+  //   catch (error)  {
+  //     this.setState({
+  //       loading: false,
+  //     });
+  //     toast.error('Sorry, something went wrong.');
+  //   }
+  //   // finally {
+  //   //   this.setState({
+  //   //     loading: false,
+  //   //   });
+  //   // }
+  // }
 
   render() {
     const { loading, images, modal, imageData } = this.state;
-    return(
+    return (
       <div>
         <Searchbar onSubmit={this.onSubmit} />
         {loading && <Loader/>}
@@ -99,11 +133,9 @@ export class App extends Component {
           items={images}
           onClick={this.openModal} />}
         {images.length > 0 && <Button onClick={this.loadMore} />}
-        {modal && <Modal
-          onClose={this.openModal}
-          items={images}>
-            <img alt={imageData.alt} src={imageData.url}/>
-        </Modal>}
+        {modal && (<Modal onClose={this.openModal} items={images}>
+            <img alt={imageData.tags} src={imageData.largeImageURL}/>
+        </Modal>)}
         <ToastContainer
           position="top-right"
           autoClose={3000}

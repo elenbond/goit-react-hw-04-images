@@ -1,13 +1,15 @@
-// import PropTypes from 'prop-types';
-import { Component } from "react";
+import PropTypes from 'prop-types';
+import React, { Component } from "react";
 import { createPortal } from "react-dom";
+import css from './Modal.module.css';
 
-const modalRoot = document.getElementById("modal-root");
+const modalRoot = document.getElementById('root');
 
 export default class Modal extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.closeModal);
   }
+  
   componentWillUnmount() {
     document.removeEventListener('keydown', this.closeModal);
   }
@@ -19,15 +21,18 @@ export default class Modal extends Component {
   }
 
     render() {
-      const { imageUrlLarge, imageTitle } = this.props.content;
       return createPortal(
-        <div className="overlay" onClick={this.closeModal}>
-            <div className="modal">
-                <img className="modalImg" src={imageUrlLarge} alt={imageTitle} />
-            </div>
+        <div className={css.overlay} onClick={this.closeModal}>
+          <div className={css.modal}>
+            {this.props.children}
+          </div>
         </div>,
-      modalRoot
-    )
+        modalRoot
+      );
   }
 }
 
+Modal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired,
+};

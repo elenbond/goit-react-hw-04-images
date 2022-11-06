@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
 import { toast } from 'react-toastify';
+import css from './Searchbar.module.css'
 
 export default class Searchbar extends Component  {
     state = {
@@ -15,38 +16,37 @@ export default class Searchbar extends Component  {
         const { searchQuery } = this.state;
         event.preventDefault();
         if (searchQuery.trim() === '') {
-            toast.error('Please, fill in the field', {autoClose: 500});
+            toast.error('Please, fill in the field');
             return;
         }
         this.props.onSubmit(searchQuery);
         this.setState({searchQuery: ''});    
     }
-    render() {
-        return (
-            <div>
-                <header>
-                    <form onSubmit={this.handleSubmit}>
-                        <button type="submit" className='button'>
-                        <span className='button-label'>Search</span>
-                        </button>
 
+    render() {
+        const { searchQuery } = this.state;
+        return (
+            <div className={css.searchbar}>
+                <header>
+                    <form onSubmit={this.handleSubmit} className={css.searchform}>
+                        <button type="submit" className={css.button}>
+                        <span className={css.button_label}>Search</span>
+                        </button>
                         <input
-                            className='input'
+                            className={css.input}
                             name='searchQuery'
                             type="text"
                             autoComplete="off"
                             autoFocus
                             placeholder="Search images and photos"
                             onChange={this.handleChange}
-                            value={this.state.searchQuery}
+                            value={searchQuery}
                         />
                     </form>
                 </header>
             </div> 
-            
         )
     }
-    
 }
 
 Searchbar.propTypes = {
