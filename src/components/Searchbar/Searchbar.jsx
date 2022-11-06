@@ -29,9 +29,6 @@ export default class Searchbar extends Component  {
             <div className={css.searchbar}>
                 <header>
                     <form onSubmit={this.handleSubmit} className={css.searchform}>
-                        <button type="submit" className={css.button}>
-                        <span className={css.button_label}>Search</span>
-                        </button>
                         <input
                             className={css.input}
                             name='searchQuery'
@@ -42,6 +39,9 @@ export default class Searchbar extends Component  {
                             onChange={this.handleChange}
                             value={searchQuery}
                         />
+                        <button type="submit" className={css.button}>
+                            <span className={css.button_label}>Search</span>
+                        </button>
                     </form>
                 </header>
             </div> 

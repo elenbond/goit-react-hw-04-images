@@ -7,6 +7,7 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { getImage } from 'api/api';
 import Modal from './Modal/Modal';
+import css from '../styles.css'
 
 export class App extends Component {
   state = {
@@ -34,14 +35,6 @@ export class App extends Component {
       }
       this.fetchImages();
     }
-    // if (prevProps.searchQuery !== searchQuery) {
-    //   fetch(`https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=27732054-5513c218cb3363c8c09534df6&image_type=photo&orientation=horizontal&per_page=12/`)
-    //     .then(res => res.json())
-    //     // .then(console.log)
-    //     .then(images => this.setState(prevState => { return { images: [...prevState.images] } }))
-    //   // this.fetchImages();
-    //   return;
-    // }
   }
   
   onSubmit = searchQuery => {
@@ -81,50 +74,10 @@ export class App extends Component {
       })
   }
 
-  // async fetchImages(searchQuery, page) {
-  //   this.setState({
-  //     loading: true,
-  //   });
-  //   try {
-  //     const result = await getImage({ page, q: searchQuery });
-  //     const items = result.hits;
-  //     if (items.length === 0) {
-  //       toast.error('This search result wasn`t successful. Please, try again!');
-  //       return;
-  //     };
-  //     if (page === 1) {
-  //       this.setState(() => {
-  //         return {
-  //           images: [...items],
-  //         }
-  //       });
-  //       toast.success('View results!');
-  //     } else {
-  //       this.setState(prevState => {
-  //         return {
-  //           images: [...prevState.images, ...items],
-  //           loading: false,
-  //         };
-  //       });
-  //     };
-  //   }
-  //   catch (error)  {
-  //     this.setState({
-  //       loading: false,
-  //     });
-  //     toast.error('Sorry, something went wrong.');
-  //   }
-  // //   // finally {
-  // //   //   this.setState({
-  // //   //     loading: false,
-  // //   //   });
-  // //   // }
-  // }
-
   render() {
     const { loading, images, modal, imageData } = this.state;
     return (
-      <div>
+      <div className={css.App}>
         <Searchbar onSubmit={this.onSubmit} />
         {loading && <Loader/>}
         {images.length > 0 && <ImageGallery

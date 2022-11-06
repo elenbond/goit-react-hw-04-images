@@ -29,10 +29,10 @@
 
 .button {
     display: inline-block;
-    width: 48px;
+    /* width: 48px; */
     height: 48px;
     border: 0;
-    background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
+    background-image: url('https://www.flaticon.com/free-icon/search-interface-symbol_54481?term=search&page=1&position=2&page=1&position=2&related_id=54481&origin=style');
     background-size: 40%;
     background-repeat: no-repeat;
     background-position: center;
@@ -47,15 +47,15 @@
 }
 
 .button_label {
-    position: absolute;
+    /* position: absolute; */
     width: 1px;
     height: 1px;
-    padding: 0;
-    overflow: hidden;
+    padding: 5px 5px;
+    /* overflow: hidden; */
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    clip-path: inset(50%);
-    border: 0;
+    /* clip-path: inset(50%); */
+    /* border: 0; */
 }
 
 .input {
