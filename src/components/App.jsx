@@ -18,21 +18,10 @@ export class App extends Component {
     modal: false,
   }
 
-  componentDidMount() {
-    this.setState({
-      images: [],
-    })
-  }
-
   async componentDidUpdate(prevProps, prevState) {
     const { page, searchQuery } = this.state;
     if (page !== prevState.page || prevState.searchQuery !== searchQuery) {
       this.setState({ loading: true });
-      if (page === 1) {
-        this.setState({
-          images: []
-        });
-      }
       this.fetchImages();
     }
   }
