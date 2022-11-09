@@ -16,6 +16,7 @@ export class App extends Component {
     loaging: false,
     page: 1,
     modal: false,
+    status: 'idle',
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -45,12 +46,19 @@ export class App extends Component {
 
   fetchImages = () => {
     const { searchQuery, page } = this.state;
+    this.setState({ status: 'pending' });
     getImage({ page, q: searchQuery })
       .then(res => {
-        this.setState(prevState => ({
-          images: [...prevState.images, ...res],
-          loading: false,
-        }));
+        const totalPages = Math.ceil(res.data.totalHits / 20);
+        if (page <= totalPages) {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...res.data.hits],
+            status: 'resolved',
+            loading:  page !== totalPages ? true : false,
+            // loading: prevState.images.length + res.data.hits.length ===
+            //   res.data.totalHits ? false : true,
+          }));
+        }
         if (res.length === 0) {
           return toast.error('This search result wasn`t successful. Please, try again!');
         }
@@ -58,21 +66,22 @@ export class App extends Component {
       .catch(error => {
         this.setState({
           loading: false,
+          status: 'rejected',
         })
         toast.error('Sorry, something went wrong.');
       })
   }
 
   render() {
-    const { loading, images, modal, imageData } = this.state;
+    const { loading, images, modal, imageData, status } = this.state;
     return (
       <div className={css.App}>
         <Searchbar onSubmit={this.onSubmit} />
-        {loading && <Loader/>}
         {images.length > 0 && <ImageGallery
           items={images}
           onClick={this.openModal} />}
-        {images.length > 0 && <Button onClick={this.loadMore} />}
+        {status === 'pending' && <Loader/>}
+        {loading && <Button onClick={this.loadMore} />}
         {modal && (<Modal onClose={this.openModal} items={images}>
             <img alt={imageData.tags} src={imageData.largeImageURL}/>
         </Modal>)}

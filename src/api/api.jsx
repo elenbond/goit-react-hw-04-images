@@ -8,7 +8,7 @@ export const params = {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
-    per_page: 10,
+    per_page: 12,
     page: 1,
 };
 
@@ -18,8 +18,8 @@ const customAxios = axios.create({
 
 export const getImage = async params => {
     try {
-        const { data } = await customAxios.get('', { params: { ...params, key: API_KEY } })
-        return data.hits;
+        const response = await customAxios.get('', { params: { ...params, key: API_KEY } })
+        return response;
     } catch {
         console.log('error');
     }
