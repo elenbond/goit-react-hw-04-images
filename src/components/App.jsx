@@ -81,7 +81,7 @@ export class App extends Component {
           items={images}
           onClick={this.openModal} />}
         {status === 'pending' && <Loader/>}
-        {loading && <Button onClick={this.loadMore} />}
+        {loading && status === 'resolved' && <Button onClick={this.loadMore} />}
         {modal && (<Modal onClose={this.openModal} items={images}>
             <img alt={imageData.tags} src={imageData.largeImageURL}/>
         </Modal>)}
