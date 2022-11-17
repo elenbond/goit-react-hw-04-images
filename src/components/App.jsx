@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from './Searchbar/Searchbar';
@@ -7,82 +7,128 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { getImage } from 'api/api';
 import Modal from './Modal/Modal';
-import css from '../styles.css'
+import css from '../styles.css';
 
-export class App extends Component {
-  state = {
-    images: [],
-    searchQuery: '',
-    loaging: false,
-    page: 1,
-    modal: false,
-    status: 'idle',
-  }
+export const App = () => {
+  const [images, setImages] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [modal, setModal] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [imageData, setImageData] = useState('');
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { page, searchQuery } = this.state;
-    if (page !== prevState.page || prevState.searchQuery !== searchQuery) {
-      this.setState({ loading: true });
-      this.fetchImages();
-    }
-  }
-  
-  onSubmit = searchQuery => {
-    this.setState({ searchQuery, page: 1, images: [] })
-  }
+  useEffect(() => {
+    const fetchImages = () => {
+      setLoading(true);
+      setStatus('pending');
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  }
-
-  openModal = imageData => {
-    this.setState(({ modal }) => ({
-      modal: !modal,
-      imageData,
-    }));
-  }
-
-  fetchImages = () => {
-    const { searchQuery, page } = this.state;
-    this.setState({ status: 'pending' });
-    getImage({ page, q: searchQuery })
-      .then(res => {
-        const totalPages = Math.ceil(res.data.totalHits / 20);
-        if (page <= totalPages) {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...res.data.hits],
-            status: 'resolved',
-            loading:  page !== totalPages ? true : false,
-            // loading: prevState.images.length + res.data.hits.length ===
-            //   res.data.totalHits ? false : true,
-          }));
-        }
-        if (res.length === 0) {
-          return toast.error('This search result wasn`t successful. Please, try again!');
-        }
-      })
-      .catch(error => {
-        this.setState({
-          loading: false,
-          status: 'rejected',
+      getImage({ page, q: searchQuery })
+        .then(res => {
+          const totalPages = Math.ceil(res.data.totalHits / 20);
+          if (page <= totalPages) {
+            setImages(prev => [...prev, ...res.data.hits]);
+            setStatus('resolved');
+            setLoading(page !== totalPages ? true : false);
+          }
+          if (res.length === 0) {
+            return toast.error('This search result wasn`t successful. Please, try again!');
+          }
         })
-        toast.error('Sorry, something went wrong.');
-      })
+        .catch(error => {
+          setLoading(false);
+          setStatus('rejected');
+          toast.error('Sorry, something went wrong.');
+        })
+    }
+    fetchImages();
+  }, [searchQuery, page]);
+// }
+
+// export class App extends Component {
+//   state = {
+//     images: [],
+//     searchQuery: '',
+//     loaging: false,
+//     page: 1,
+//     modal: false,
+//     status: 'idle',
+//   }
+
+  // async componentDidUpdate(prevProps, prevState) {
+  //   const { page, searchQuery } = this.state;
+  //   if (page !== prevState.page || prevState.searchQuery !== searchQuery) {
+  //     this.setState({ loading: true });
+  //     this.fetchImages();
+  //   }
+  // }
+  
+  const onSubmit = searchQuery => {
+    // this.setState({ searchQuery, page: 1, images: [] })
+    setSearchQuery(searchQuery);
+    setPage(1);
+    setImages([]);
   }
 
-  render() {
-    const { loading, images, modal, imageData, status } = this.state;
+  const loadMore = () => {
+    // this.setState(prevState => ({
+    //   page: prevState.page + 1,
+    // }));
+    setPage(prevPage =>  prevPage + 1 );
+  }
+
+  const openModal = imageData => {
+    // this.setState(({ modal }) => ({
+    //   modal: !modal,
+    //   imageData,
+    // }));
+    setImageData(imageData);
+    setModal(false);
+  }
+
+  // const fetchImages = () => {
+  //   // const { searchQuery, page } = this.state;
+  //   setStatus('pending');
+  //   // this.setState({ status: 'pending' });
+  //   getImage({ page, q: searchQuery })
+  //     .then(res => {
+  //       const totalPages = Math.ceil(res.data.totalHits / 20);
+  //       if (page <= totalPages) {
+  //         // this.setState(prevState => ({
+  //         //   images: [...prevState.images, ...res.data.hits],
+  //         //   status: 'resolved',
+  //         //   loading:  page !== totalPages ? true : false,
+  //         // }));
+  //         setImages(prev => [...prev, ...images]);
+  //         setStatus('resolved');
+  //         setLoading(page !== totalPages ? true : false);
+  //       }
+  //       if (res.length === 0) {
+  //         return toast.error('This search result wasn`t successful. Please, try again!');
+  //       }
+  //     })
+  //     .catch(error => {
+  //       // this.setState({
+  //       //   loading: false,
+  //       //   status: 'rejected',
+  //       // })
+  //       setLoading(false);
+  //       setStatus('rejected');
+  //       toast.error('Sorry, something went wrong.');
+  //     })
+  // }
+
+  // render() {
+    // const { loading, images, modal, imageData, status } = this.state;
     return (
       <div className={css.App}>
-        <Searchbar onSubmit={this.onSubmit} />
+        <Searchbar onSubmit={onSubmit} />
         {images.length > 0 && <ImageGallery
           items={images}
-          onClick={this.openModal} />}
+          onClick={openModal} />}
         {status === 'pending' && <Loader/>}
-        {loading && status === 'resolved' && <Button onClick={this.loadMore} />}
-        {modal && (<Modal onClose={this.openModal} items={images}>
+        {loading && status === 'resolved' && <Button onClick={loadMore} />}
+        {modal && (<Modal onClose={openModal} items={images}>
             <img alt={imageData.tags} src={imageData.largeImageURL}/>
         </Modal>)}
         <ToastContainer
@@ -98,5 +144,6 @@ export class App extends Component {
           theme="dark"
         />
       </div>
-  )};
+  )
+// };
 };
