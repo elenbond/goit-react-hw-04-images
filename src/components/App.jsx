@@ -46,28 +46,8 @@ export const App = () => {
     }
     fetchImages();
   }, [searchQuery, page]);
-// }
-
-// export class App extends Component {
-//   state = {
-//     images: [],
-//     searchQuery: '',
-//     loaging: false,
-//     page: 1,
-//     modal: false,
-//     status: 'idle',
-//   }
-
-  // async componentDidUpdate(prevProps, prevState) {
-  //   const { page, searchQuery } = this.state;
-  //   if (page !== prevState.page || prevState.searchQuery !== searchQuery) {
-  //     this.setState({ loading: true });
-  //     this.fetchImages();
-  //   }
-  // }
   
   const onSubmit = searchQuery => {
-    // this.setState({ searchQuery, page: 1, images: [] })
     setSearchQuery(searchQuery);
     setLoading(false);
     setPage(1);
@@ -75,79 +55,37 @@ export const App = () => {
   }
 
   const loadMore = () => {
-    // this.setState(prevState => ({
-    //   page: prevState.page + 1,
-    // }));
     setPage(prevPage =>  prevPage + 1 );
   }
 
   const openModal = imageData => {
-    // this.setState(({ modal }) => ({
-    //   modal: !modal,
-    //   imageData,
-    // }));
     setModal(!modal);
     setImageData(imageData);
   }
 
-  // const fetchImages = () => {
-  //   // const { searchQuery, page } = this.state;
-  //   setStatus('pending');
-  //   // this.setState({ status: 'pending' });
-  //   getImage({ page, q: searchQuery })
-  //     .then(res => {
-  //       const totalPages = Math.ceil(res.data.totalHits / 20);
-  //       if (page <= totalPages) {
-  //         // this.setState(prevState => ({
-  //         //   images: [...prevState.images, ...res.data.hits],
-  //         //   status: 'resolved',
-  //         //   loading:  page !== totalPages ? true : false,
-  //         // }));
-  //         setImages(prev => [...prev, ...images]);
-  //         setStatus('resolved');
-  //         setLoading(page !== totalPages ? true : false);
-  //       }
-  //       if (res.length === 0) {
-  //         return toast.error('This search result wasn`t successful. Please, try again!');
-  //       }
-  //     })
-  //     .catch(error => {
-  //       // this.setState({
-  //       //   loading: false,
-  //       //   status: 'rejected',
-  //       // })
-  //       setLoading(false);
-  //       setStatus('rejected');
-  //       toast.error('Sorry, something went wrong.');
-  //     })
-  // }
-
-  // render() {
-    // const { loading, images, modal, imageData, status } = this.state;
-    return (
-      <div className={css.App}>
-        <Searchbar onSubmit={onSubmit} />
-        {images.length > 0 && <ImageGallery
-          items={images}
-          onClick={openModal} />}
-        {status === 'pending' && <Loader/>}
-        {loading && status === 'resolved' && <Button onClick={loadMore} />}
-        {modal && (<Modal onClose={openModal} items={images}>
-            <img alt={imageData.tags} src={imageData.largeImageURL}/>
-        </Modal>)}
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
-      </div>
+  return (
+    <div className={css.App}>
+      <Searchbar onSubmit={onSubmit} />
+      {images.length > 0 && <ImageGallery
+        items={images}
+        onClick={openModal} />}
+      {status === 'pending' && <Loader />}
+      {loading && status === 'resolved' && <Button onClick={loadMore} />}
+      {modal && (<Modal onClose={openModal} items={images}>
+        <img alt={imageData.tags} src={imageData.largeImageURL} />
+      </Modal>)}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+    </div>
   )
-// };
 };
