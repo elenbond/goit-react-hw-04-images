@@ -23,12 +23,12 @@ export const App = () => {
       return;
     }
     const fetchImages = () => {
-      setLoading(true);
+      // setLoading(true);
       setStatus('pending');
 
       getImage({ page, q: searchQuery })
         .then(res => {
-          const totalPages = Math.ceil(res.data.totalHits / 12);
+          const totalPages = Math.ceil(res.data.totalHits / 20);
           if (page <= totalPages) {
             setImages(prev => [...prev, ...res.data.hits]);
             setStatus('resolved');
