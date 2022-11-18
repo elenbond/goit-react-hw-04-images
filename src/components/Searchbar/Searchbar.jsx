@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import css from './Searchbar.module.css';
 
-const Searchbar = ({onSubmit}) => {
+const Searchbar = ({ onSubmit }) => {
 
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleChange = (event) => {
-        setSearchQuery( event.currentTarget.value.toLowerCase() );
-    }
+        setSearchQuery(event.currentTarget.value.toLowerCase());
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -18,8 +18,8 @@ const Searchbar = ({onSubmit}) => {
             return;
         }
         onSubmit(searchQuery);
-        setSearchQuery('');    
-    }
+        setSearchQuery('');
+    };
 
     return (
         <div className={css.searchbar}>
@@ -40,9 +40,9 @@ const Searchbar = ({onSubmit}) => {
                     </button>
                 </form>
             </header>
-        </div> 
+        </div>
     )
-}
+};
 
 export default Searchbar;
 

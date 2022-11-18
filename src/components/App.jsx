@@ -25,7 +25,7 @@ export const App = () => {
 
       getImage({ page, q: searchQuery })
         .then(res => {
-          const totalPages = Math.ceil(res.data.totalHits / 20);
+          const totalPages = Math.ceil(res.data.totalHits / 12);
           if (page <= totalPages) {
             setImages(prev => [...prev, ...res.data.hits]);
             setStatus('resolved');
@@ -66,6 +66,7 @@ export const App = () => {
   const onSubmit = searchQuery => {
     // this.setState({ searchQuery, page: 1, images: [] })
     setSearchQuery(searchQuery);
+    setLoading(false);
     setPage(1);
     setImages([]);
   }
@@ -82,8 +83,8 @@ export const App = () => {
     //   modal: !modal,
     //   imageData,
     // }));
+    setModal(!modal);
     setImageData(imageData);
-    setModal(false);
   }
 
   // const fetchImages = () => {
