@@ -19,6 +19,9 @@ export const App = () => {
   const [imageData, setImageData] = useState('');
 
   useEffect(() => {
+    if (searchQuery === '') {
+      return;
+    }
     const fetchImages = () => {
       setLoading(true);
       setStatus('pending');
